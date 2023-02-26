@@ -4,12 +4,14 @@ import { MagnifyingGlassIcon, GlobeAltIcon, Bars3Icon, UsersIcon, UserCircleIcon
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRangePicker } from 'react-date-range';
+import {useRouter} from "next/router";
 
-function Header() {
+function Header({placeholder}) {
     const [searchInput, setSearchInput] = React.useState('');
     const [startDate, setStartDate] = React.useState(new Date());
     const [endDate, setEndDate] = React.useState(new Date());
     const [noOfGuests, setNoOfGuests] = React.useState(1);
+    const router = useRouter();
 
     const handleSelect = (ranges) => {
         setStartDate(ranges.selection.startDate);
@@ -26,14 +28,23 @@ function Header() {
         setSearchInput('');
     }
     const search = () => {
-        console.log('search');
+        router.push({
+            pathname: '/search',
+            query: {
+                location: searchInput,
+                startDate: startDate.toISOString(),
+                endDate: endDate.toISOString(),
+                noOfGuests
+            }
+        })
 
     }
 
     return (
         <header className={'sticky top-0 z-50 grid grid-cols-3 bg-white shadow-md p-5 md:px-10  '}>
+            {/*left*/}
 
-            <div className={'relative flex items-center h-10 cursor-pointer my-auto'}>
+            <div onClick={() => router.push("/")} className={'relative flex items-center h-10 cursor-pointer my-auto'}>
                 <Image src={'https://links.papareact.com/qd3'} layout='fill' objectFit={'contain'} objectPosition={'left'} alt={''} />
             </div>
             {/*Middle*/}
@@ -42,7 +53,10 @@ function Header() {
                     type="text"
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
-                    className={'pl-5 bg-transparent outline-none flex-grow text-sm text-gray-600 placeholder-gray-400'} placeholder={'Start your search'}/>
+                    className={'pl-5 bg-transparent outline-none flex-grow text-sm text-gray-600 placeholder-gray-400'}
+                    placeholder={placeholder || 'Start your search'}
+
+                />
                 <MagnifyingGlassIcon className={'hidden md:inline-flex h-8 bg-red-400 text-white rounded-full p-2 cursor-pointer md:mx-2'} />
 
 
